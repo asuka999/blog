@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://npmcdn.com/react@latest/dist/react.min.js"></script>
+  <script src="https://npmcdn.com/react-dom@latest/dist/react-dom.min.js"></script>
+  <script src="https://npmcdn.com/redux@latest/dist/redux.min.js"></script>
+  <script src="https://npmcdn.com/babel-standalone@latest"></script>
+  <script type="text/babel">
+  function initReduxStore(initState){
+    var reducer = function (state, action) {
+      switch (action.type) {
+        case 'GET_DATA':
+          return Object.assign({}, state, {data: action.data})
+        default:
+          return state
+      }
+    }
+    return Redux.createStore(reducer, initState)
+  }
+
+  var actionCreator = function (data) {
+    return {
+      type: 'GET_DATA',
+      data: data
+    }
+  }
+
+  class App extends React.Component {
+    constructor(props){
+      super(props)
+      const {store} = props
+      store.subscribe(() => this.setState({data: store.getState().data}))
+      this.state = {data: null}
+    }
+    handleInput(e) {
+      const {state} = this.props
+      store.dispatch(actionCreator(e.target.value))
+    }
+    render(){
+      return (
+        <div>
+          <div id="output">{this.state.data}</div>
+          <input id="input" type="text" onInput={this.handleInput.bind(this)}  value={this.state.data}/>
+        </div>
+      )
+    }
+  }
+  const store = initReduxStore({})
+  ReactDOM.render(<App store={store} />, document.getElementById('root'))
+
+  </script>
+</body>
+</html>

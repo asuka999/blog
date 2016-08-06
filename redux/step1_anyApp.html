@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+  <div id="output"></div>
+  <input id="input" type="text" />
+  <script src="https://npmcdn.com/redux@latest/dist/redux.min.js"></script>
+  <script>
+  // build a redux app to maintain ur data
+  function initReduxStore(initState){
+    var reducer = function (state, action) {
+      switch (action.type) {
+        case 'GET_DATA':
+          return Object.assign({}, state, {data: action.data})
+        default:
+          return state
+      }
+    }
+    return Redux.createStore(reducer, initState)
+  }
+  // init ur app
+  var input = document.getElementById('input')
+  var output = document.getElementById('output')
+
+  var store = initReduxStore({data:'initdata'})
+  var render = function (){
+    output.textContent = store.getState().data
+  }
+  store.subscribe(render)
+
+  var actionCreator = function (data) {
+    return {
+      type: 'GET_DATA',
+      data: data
+    }
+  }
+
+  input.addEventListener('input', function (e){
+    var str = e.target.value
+    store.dispatch(actionCreator(str))
+  })
+  </script>
+</body>
+</html>

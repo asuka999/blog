@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://npmcdn.com/react@latest/dist/react.min.js"></script>
+  <script src="https://npmcdn.com/react-dom@latest/dist/react-dom.min.js"></script>
+  <script src="https://npmcdn.com/redux@latest/dist/redux.min.js"></script>
+  <script src="https://npmcdn.com/babel-standalone@latest"></script>
+  <script src="https://npmcdn.com/react-redux@latest/dist/react-redux.min.js"></script>
+  <script type="text/babel">
+  const Provider = ReactRedux.Provider,
+    connect = ReactRedux.connect
+
+  function initReduxStore(initState){
+    var reducer = function (state, action) {
+      switch (action.type) {
+        case 'GET_DATA':
+          return Object.assign({}, state, {data: action.data})
+        default:
+          return state
+      }
+    }
+    return Redux.createStore(reducer, initState)
+  }
+
+  var actionCreator = function (data) {
+    return {
+      type: 'GET_DATA',
+      data: data
+    }
+  }
+
+  class App extends React.Component {
+    handleInput(e) {
+      const {dispatch} = this.props
+      dispatch(actionCreator(e.target.value))
+    }
+    render(){
+      return (
+        <div>
+          <div id="output">{this.props.data}</div>
+          <input id="input" type="text" onInput={this.handleInput.bind(this)}  value={this.props.data}/>
+        </div>
+      )
+    }
+  }
+  App = connect(
+    (state, props) => ({data: state.data}),
+    (dispatch, props) => Object.assign({}, props, {dispatch})
+        // if do not pass fn, will use default like this, which may inject dispatch anywherre
+  )(App)
+
+  const store = initReduxStore({})
+  ReactDOM.render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    document.getElementById('root'))
+  </script>
+</body>
+</html>

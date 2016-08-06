@@ -1,3 +1,5 @@
 # blog
-blog for my coding
-code 方面的博客，记录笔记
+
+> blog for my coding, what I wish I knew when starting with ...
+>
+> 开篇啦开篇啦，记录我js的一路。
